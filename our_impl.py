@@ -74,8 +74,16 @@ for i in range(h):
 		dark_trans[i, j] = min_val
 
 transmission = 1 - omega*dark_trans
-	
-		
+t0 = 0.1
+#ATM_LIGHT = np.array([ATM_LIGHT])
+
+#scene_radiance = ( I - ATM_LIGHT ) / cv2.max(t0, transmission )  + ATM_LIGHT	
+
+scene_radiance = np.empty(I.shape, I.dtype)
+for i in range(0,3):
+	scene_radiance[:,:,i] = (I[:,:,i]-ATM_LIGHT[i])/transmission + ATM_LIGHT[i]     
+cv2.imshow(file_name, I)        
+cv2.imshow("scene_radiance", scene_radiance)
 cv2.imshow("dark", dark)
 cv2.imshow("trans", transmission)
 cv2.waitKey()
