@@ -1,13 +1,13 @@
 import numpy as np
 import cv2
 
-I = cv2.imread("images.jpg", cv2.IMREAD_COLOR).astype("float64")/255 
+I = cv2.imread("im4.jpeg", cv2.IMREAD_COLOR).astype("float64")/255 
 
 #print(I[500:550, 500:550, :])
 
 (h, w, n_colors) = I.shape
 dark = np.zeros([h, w])
-PATCH_SIZE = 15
+PATCH_SIZE = 3
 
 i, j = 0, 0
 
