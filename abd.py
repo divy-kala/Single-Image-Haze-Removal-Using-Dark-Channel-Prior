@@ -24,6 +24,7 @@ def AtmLight(im,dark):
        atmsum = atmsum + imvec[indices[ind]]
 
     A = atmsum / numpx;
+    print(A)
     return A
 
 def TransmissionEstimate(im,A,sz):
