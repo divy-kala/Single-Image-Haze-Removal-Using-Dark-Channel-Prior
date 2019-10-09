@@ -53,7 +53,7 @@ for _, i, j in HEAP:
 		
 				
 #transmission
-omega = 0.95
+omega = 0.75
 temp_I = np.empty(I.shape,I.dtype)
 for i in range(3):
 	temp_I[:, :, i] = I[:, :, i]/ATM_LIGHT[i]
