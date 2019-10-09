@@ -81,10 +81,25 @@ t0 = 0.1
 
 scene_radiance = np.empty(I.shape, I.dtype)
 for i in range(0,3):
-	scene_radiance[:,:,i] = (I[:,:,i]-ATM_LIGHT[i])/transmission + ATM_LIGHT[i]     
-cv2.imshow(file_name, I)        
+	scene_radiance[:,:,i] = (I[:,:,i]-ATM_LIGHT[i])/transmission + ATM_LIGHT[i]
+
+scene_radiance_e = scene_radiance + 0.1     
+	     
+cv2.imshow("scene_radiance_exposed", scene_radiance_e)
+cv2.imwrite("scene_exposed_"+file_name, scene_radiance_e*255)
+     
 cv2.imshow("scene_radiance", scene_radiance)
-cv2.imshow("dark", dark)
+cv2.imwrite("scene"+file_name, scene_radiance*255)
+
+
 cv2.imshow("trans", transmission)
+cv2.imwrite("trans"+file_name, transmission*255)
+
+
+cv2.imwrite("dark"+file_name, dark*255)
+cv2.imshow("dark", dark)
+
+cv2.imshow(file_name, I)  
+
 cv2.waitKey()
  
