@@ -40,9 +40,9 @@ I = src.astype("float64")/255
 
 (h, w, n_colors) = I.shape
 dark = np.zeros([h, w])
-PATCH_SIZE = 15 #must be an odd numebr
+PATCH_SIZE = 3 #must be an odd numebr
 
-step = PATCH_SIZE >> 1
+step = PATCH_SIZE // 2
 
 num_pixels = h * w
 topvalues = max(num_pixels // 10000, 10)
@@ -112,7 +112,7 @@ scene_radiance = np.empty(I.shape, I.dtype)
 for i in range(0,3):
 	scene_radiance[:,:,i] = (I[:,:,i]-ATM_LIGHT[i])/transmission + ATM_LIGHT[i]
      
-scene_radiance_e = scene_radiance + 0.1     
+scene_radiance_e = scene_radiance + 0.04    
 	     
 cv2.imshow("scene_radiance_exposed", scene_radiance_e)
 cv2.imwrite("scene_exposed_"+file_name, scene_radiance_e*255)
