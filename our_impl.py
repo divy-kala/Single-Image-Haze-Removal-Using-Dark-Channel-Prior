@@ -3,10 +3,38 @@ import cv2
 import sys
 import heapq
 
+
+def Guidedfilter(im,p,r,eps):
+    mean_I = cv2.boxFilter(im,cv2.CV_64F,(r,r)) 
+    mean_p = cv2.boxFilter(p, cv2.CV_64F,(r,r)) 
+    mean_Ip = cv2.boxFilter(im*p,cv2.CV_64F,(r,r)) 
+    cov_Ip = mean_Ip - mean_I*mean_p 
+
+    mean_II = cv2.boxFilter(im*im,cv2.CV_64F,(r,r)) 
+    var_I   = mean_II - mean_I*mean_I 
+
+    a = cov_Ip/(var_I + eps) 
+    b = mean_p - a*mean_I 
+
+    mean_a = cv2.boxFilter(a,cv2.CV_64F,(r,r)) 
+    mean_b = cv2.boxFilter(b,cv2.CV_64F,(r,r)) 
+
+    q = mean_a*im + mean_b 
+    return q 
+
+def TransmissionRefine(im,et):
+    gray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY) 
+    gray = np.float64(gray)/255 
+    r = 60 
+    eps = 0.0001 
+    t = Guidedfilter(gray,et,r,eps) 
+
+    return t 
+
 file_name = sys.argv[1]
 
-
-I = cv2.imread(file_name, cv2.IMREAD_COLOR).astype("float64")/255 
+src = cv2.imread(file_name, cv2.IMREAD_COLOR)
+I = src.astype("float64")/255 
 
 #print(I[500:550, 500:550, :])
 
@@ -53,7 +81,7 @@ for _, i, j in HEAP:
 		
 				
 #transmission
-omega = 0.95
+omega = 0.75
 temp_I = np.empty(I.shape,I.dtype)
 for i in range(3):
 	temp_I[:, :, i] = I[:, :, i]/ATM_LIGHT[i]
@@ -78,11 +106,12 @@ t0 = 0.1
 #ATM_LIGHT = np.array([ATM_LIGHT])
 
 #scene_radiance = ( I - ATM_LIGHT ) / cv2.max(t0, transmission )  + ATM_LIGHT	
+transmission = TransmissionRefine(src, transmission)
 
 scene_radiance = np.empty(I.shape, I.dtype)
 for i in range(0,3):
 	scene_radiance[:,:,i] = (I[:,:,i]-ATM_LIGHT[i])/transmission + ATM_LIGHT[i]
-
+     
 scene_radiance_e = scene_radiance + 0.1     
 	     
 cv2.imshow("scene_radiance_exposed", scene_radiance_e)
